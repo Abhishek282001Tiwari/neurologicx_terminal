@@ -5,8 +5,7 @@ A standalone terminal interface built with Streamlit
 
 import streamlit as st
 from datetime import datetime
-import random
-import os
+from logic_engine import handle_command
 
 # Page configuration
 st.set_page_config(
@@ -178,7 +177,8 @@ st.markdown("""
 # Initialize session state
 if 'terminal_history' not in st.session_state:
     st.session_state.terminal_history = []
-    st.session_state.terminal_history.append("Terminal Interface v1.0")
+    st.session_state.terminal_history.append("Terminal AI Interface v2.0")
+    st.session_state.terminal_history.append("Enhanced with AI command processing")
     st.session_state.terminal_history.append("Type 'help' for available commands")
     st.session_state.terminal_history.append("=" * 50)
     st.session_state.terminal_history.append("")
@@ -187,8 +187,8 @@ if 'command_count' not in st.session_state:
     st.session_state.command_count = 0
 
 # Header
-st.markdown('<div class="terminal-header">Terminal Interface</div>', unsafe_allow_html=True)
-st.markdown('<div class="terminal-subtitle">Minimalist Code Editor Style</div>', unsafe_allow_html=True)
+st.markdown('<div class="terminal-header">Terminal AI Interface</div>', unsafe_allow_html=True)
+st.markdown('<div class="terminal-subtitle">Minimalist Code Editor Style with AI Commands</div>', unsafe_allow_html=True)
 
 # Terminal output display
 terminal_content = "\n".join(st.session_state.terminal_history)
@@ -204,14 +204,14 @@ with col1:
     user_command = st.text_input(
         "",
         key="command_input",
-        placeholder="Type your command here...",
+        placeholder="Type your command here (e.g., help, dog, add 5 3)...",
         label_visibility="hidden"
     )
 
 with col2:
     execute_button = st.button("Execute", type="primary")
 
-# Process command
+# Process command using logic engine
 if execute_button or (user_command and st.session_state.get('last_command') != user_command):
     if user_command.strip():
         st.session_state.last_command = user_command
@@ -220,147 +220,33 @@ if execute_button or (user_command and st.session_state.get('last_command') != u
         # Add command to history
         st.session_state.terminal_history.append(f"$ {user_command}")
         
-        # Process different commands
-        command = user_command.strip().lower()
-        args = user_command.strip().split()[1:] if len(user_command.strip().split()) > 1 else []
-        
-        if command == "help":
-            st.session_state.terminal_history.extend([
-                "",
-                "Available commands:",
-                "  help          - Show this help message",
-                "  clear         - Clear terminal output",
-                "  date          - Show current date and time",
-                "  info          - Show system information",
-                "  echo <text>   - Echo back the text",
-                "  ls            - List directory contents (simulated)",
-                "  pwd           - Show current directory",
-                "  whoami        - Show current user",
-                "  random        - Generate a random number",
-                "  calc <expr>   - Simple calculator (e.g., calc 2+2)",
-                "  uptime        - Show session uptime",
-                ""
-            ])
+        # Process command using the logic engine
+        try:
+            response = handle_command(user_command)
             
-        elif command == "clear":
-            st.session_state.terminal_history = []
-            st.session_state.terminal_history.extend([
-                "Terminal cleared.",
-                "Type 'help' for available commands",
-                ""
-            ])
-            
-        elif command == "date":
-            current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S %Z")
-            st.session_state.terminal_history.extend([
-                f"Current date and time: {current_time}",
-                ""
-            ])
-            
-        elif command == "info":
-            st.session_state.terminal_history.extend([
-                "",
-                "System Information:",
-                "  Platform: Streamlit Terminal Interface",
-                "  Version: 1.0.0",
-                f"  Commands executed: {st.session_state.command_count}",
-                "  Font: Cambria",
-                "  Theme: Dark Terminal",
-                "  Background: Pure Black (#000000)",
-                "  Text Color: White (#ffffff)",
-                ""
-            ])
-            
-        elif command.startswith("echo"):
-            if args:
-                text_to_echo = " ".join(args)
+            # Handle special responses
+            if response == "CLEAR_SCREEN":
+                st.session_state.terminal_history = []
                 st.session_state.terminal_history.extend([
-                    text_to_echo,
+                    "Terminal cleared.",
+                    "Type 'help' for available commands",
                     ""
                 ])
             else:
-                st.session_state.terminal_history.extend([
-                    "Usage: echo <text>",
-                    ""
-                ])
+                # Add response to history
+                if response:
+                    # Split multi-line responses properly
+                    response_lines = response.split('\n')
+                    st.session_state.terminal_history.extend(response_lines)
+                else:
+                    st.session_state.terminal_history.append("(no output)")
                 
-        elif command == "ls":
-            st.session_state.terminal_history.extend([
-                "drwxr-xr-x  streamlit_app.py",
-                "drwxr-xr-x  requirements.txt", 
-                "drwxr-xr-x  README.md",
-                "drwxr-xr-x  .gitignore",
-                ""
-            ])
-            
-        elif command == "pwd":
-            st.session_state.terminal_history.extend([
-                "/terminal-interface",
-                ""
-            ])
-            
-        elif command == "whoami":
-            st.session_state.terminal_history.extend([
-                "terminal-user",
-                ""
-            ])
-            
-        elif command == "random":
-            random_num = random.randint(1, 1000)
-            st.session_state.terminal_history.extend([
-                f"Random number: {random_num}",
-                ""
-            ])
-            
-        elif command.startswith("calc"):
-            if args:
-                try:
-                    expression = " ".join(args)
-                    # Simple and safe evaluation for basic math
-                    allowed_chars = set('0123456789+-*/.()')
-                    if all(c in allowed_chars or c.isspace() for c in expression):
-                        result = eval(expression)
-                        st.session_state.terminal_history.extend([
-                            f"{expression} = {result}",
-                            ""
-                        ])
-                    else:
-                        st.session_state.terminal_history.extend([
-                            "Error: Invalid characters in expression",
-                            "Only numbers, +, -, *, /, (, ) are allowed",
-                            ""
-                        ])
-                except:
-                    st.session_state.terminal_history.extend([
-                        "Error: Invalid mathematical expression",
-                        "Example: calc 2+2 or calc (5*3)-1",
-                        ""
-                    ])
-            else:
-                st.session_state.terminal_history.extend([
-                    "Usage: calc <expression>",
-                    "Example: calc 2+2",
-                    ""
-                ])
+                st.session_state.terminal_history.append("")
                 
-        elif command == "uptime":
-            uptime_info = f"Session commands: {st.session_state.command_count}"
+        except Exception as e:
             st.session_state.terminal_history.extend([
-                f"Terminal uptime: {uptime_info}",
-                ""
-            ])
-            
-        elif command in ["exit", "quit"]:
-            st.session_state.terminal_history.extend([
-                "Cannot exit web terminal.",
-                "Close browser tab to exit.",
-                ""
-            ])
-            
-        else:
-            st.session_state.terminal_history.extend([
-                f"Command not found: {user_command}",
-                "Type 'help' for available commands.",
+                f"System Error: {str(e)}",
+                "Please try again or type 'help' for available commands.",
                 ""
             ])
         
@@ -371,35 +257,106 @@ if execute_button or (user_command and st.session_state.get('last_command') != u
 st.markdown("---")
 
 # Multi-line input
-st.markdown('<div class="terminal-prompt">Multi-line Input:</div>', unsafe_allow_html=True)
+st.markdown('<div class="terminal-prompt">Multi-line Command Input:</div>', unsafe_allow_html=True)
 multi_line_input = st.text_area(
     "",
     height=100,
-    placeholder="Enter multiple lines of code or text here...",
+    placeholder="Enter multiple commands, one per line...\nExample:\ndog\nadd 5 3\ncat",
     label_visibility="hidden"
 )
 
-if st.button("Process Multi-line"):
+if st.button("Process Multi-line Commands"):
     if multi_line_input.strip():
         st.session_state.terminal_history.extend([
-            "Multi-line input processed:",
+            "Processing multi-line commands:",
             ""
         ])
+        
+        # Process each line as a separate command
         for line in multi_line_input.split('\n'):
-            if line.strip():
-                st.session_state.terminal_history.append(f"  {line}")
+            line = line.strip()
+            if line:
+                st.session_state.terminal_history.append(f"$ {line}")
+                
+                try:
+                    response = handle_command(line)
+                    
+                    if response == "CLEAR_SCREEN":
+                        st.session_state.terminal_history = []
+                        st.session_state.terminal_history.extend([
+                            "Terminal cleared.",
+                            "Type 'help' for available commands",
+                            ""
+                        ])
+                        break  # Stop processing if clear is encountered
+                    else:
+                        if response:
+                            response_lines = response.split('\n')
+                            st.session_state.terminal_history.extend(response_lines)
+                        st.session_state.terminal_history.append("")
+                        
+                except Exception as e:
+                    st.session_state.terminal_history.extend([
+                        f"Error processing '{line}': {str(e)}",
+                        ""
+                    ])
+        
+        st.rerun()
+
+# Command examples
+st.markdown('<div class="terminal-prompt">Quick Examples:</div>', unsafe_allow_html=True)
+
+# Create example buttons
+example_col1, example_col2, example_col3, example_col4 = st.columns(4)
+
+with example_col1:
+    if st.button("help"):
+        st.session_state.terminal_history.append("$ help")
+        response = handle_command("help")
+        response_lines = response.split('\n')
+        st.session_state.terminal_history.extend(response_lines)
+        st.session_state.terminal_history.append("")
+        st.rerun()
+
+with example_col2:
+    if st.button("dog"):
+        st.session_state.terminal_history.append("$ dog")
+        response = handle_command("dog")
+        st.session_state.terminal_history.append(response)
+        st.session_state.terminal_history.append("")
+        st.rerun()
+
+with example_col3:
+    if st.button("add 7 3"):
+        st.session_state.terminal_history.append("$ add 7 3")
+        response = handle_command("add 7 3")
+        st.session_state.terminal_history.append(response)
+        st.session_state.terminal_history.append("")
+        st.rerun()
+
+with example_col4:
+    if st.button("random"):
+        st.session_state.terminal_history.append("$ random")
+        response = handle_command("random")
+        st.session_state.terminal_history.append(response)
         st.session_state.terminal_history.append("")
         st.rerun()
 
 # Clear terminal button
 if st.button("Clear Terminal"):
-    st.session_state.terminal_history = []
-    st.session_state.terminal_history.extend([
-        "Terminal cleared.",
-        "Type 'help' for available commands",
-        ""
-    ])
+    response = handle_command("clear")
+    if response == "CLEAR_SCREEN":
+        st.session_state.terminal_history = []
+        st.session_state.terminal_history.extend([
+            "Terminal cleared.",
+            "Type 'help' for available commands",
+            ""
+        ])
     st.rerun()
+
+# Session info
+st.markdown("---")
+st.markdown(f'<div class="terminal-prompt">Session Info: Commands executed: {st.session_state.command_count}</div>', unsafe_allow_html=True)
 
 # Social links footer
 st.markdown("""
