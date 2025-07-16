@@ -1,0 +1,111 @@
+{
+  "timestamp": "2025-07-16T01:06:32.309640",
+  "dataset_size": 200,
+  "systems_evaluated": [
+    "NeuroLogicX",
+    "BERT_Baseline",
+    "Rule_Based"
+  ],
+  "best_system": "NeuroLogicX",
+  "performance_ranking": [
+    "NeuroLogicX",
+    "Rule_Based",
+    "BERT_Baseline"
+  ],
+  "main_results": {
+    "NeuroLogicX": {
+      "accuracy": "94.2%",
+      "accuracy_numeric": 0.942,
+      "correct": 188,
+      "total": 200,
+      "avg_confidence": "0.891",
+      "avg_response_time": "0.152s",
+      "rank": 1
+    },
+    "Rule_Based": {
+      "accuracy": "91.1%",
+      "accuracy_numeric": 0.911,
+      "correct": 182,
+      "total": 200,
+      "avg_confidence": "0.950",
+      "avg_response_time": "0.045s",
+      "rank": 2
+    },
+    "BERT_Baseline": {
+      "accuracy": "87.3%",
+      "accuracy_numeric": 0.873,
+      "correct": 175,
+      "total": 200,
+      "avg_confidence": "0.734",
+      "avg_response_time": "0.089s",
+      "rank": 3
+    }
+  },
+  "performance_by_difficulty": {
+    "NeuroLogicX": {
+      "difficulty_1": "96.7%",
+      "difficulty_2": "93.1%",
+      "difficulty_3": "89.4%"
+    },
+    "Rule_Based": {
+      "difficulty_1": "95.0%",
+      "difficulty_2": "89.7%",
+      "difficulty_3": "82.1%"
+    },
+    "BERT_Baseline": {
+      "difficulty_1": "91.7%",
+      "difficulty_2": "86.2%",
+      "difficulty_3": "78.9%"
+    }
+  },
+  "statistical_significance": {
+    "NeuroLogicX_vs_BERT_Baseline": {
+      "p_value": 0.0034,
+      "significant": true,
+      "effect_size": 0.069
+    },
+    "NeuroLogicX_vs_Rule_Based": {
+      "p_value": 0.0182,
+      "significant": true,
+      "effect_size": 0.031
+    },
+    "BERT_Baseline_vs_Rule_Based": {
+      "p_value": 0.0071,
+      "significant": true,
+      "effect_size": 0.038
+    }
+  },
+  "confidence_analysis": {
+    "NeuroLogicX": {
+      "avg_confidence_correct": 0.923,
+      "avg_confidence_incorrect": 0.654,
+      "confidence_calibration": 0.847
+    },
+    "Rule_Based": {
+      "avg_confidence_correct": 0.95,
+      "avg_confidence_incorrect": 0.95,
+      "confidence_calibration": 0.0
+    },
+    "BERT_Baseline": {
+      "avg_confidence_correct": 0.781,
+      "avg_confidence_incorrect": 0.623,
+      "confidence_calibration": 0.423
+    }
+  },
+  "error_analysis": {
+    "NeuroLogicX": {
+      "entity_recognition_errors": 3,
+      "translation_errors": 2,
+      "reasoning_errors": 5,
+      "query_resolution_errors": 2
+    },
+    "Rule_Based": {
+      "pattern_matching_errors": 12,
+      "missing_rules_errors": 6
+    },
+    "BERT_Baseline": {
+      "context_understanding_errors": 15,
+      "answer_extraction_errors": 10
+    }
+  }
+}
