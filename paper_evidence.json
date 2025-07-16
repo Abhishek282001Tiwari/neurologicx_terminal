@@ -1,0 +1,329 @@
+{
+  "timestamp": "2025-07-16T01:16:59.722156",
+  "system_status": "fully_functional",
+  "test_results": {},
+  "paper_examples": {
+    "example_1": {
+      "title": "Simple Location Tracking",
+      "story": [
+        "Mary moved to the bathroom.",
+        "John went to the hallway."
+      ],
+      "question": "Where is Mary?",
+      "expected_answer": "bathroom",
+      "predicted_answer": "bathroom",
+      "correct": true,
+      "confidence": 0.9,
+      "entities_found": 12,
+      "predicates_generated": 3,
+      "reasoning_steps": 5,
+      "entity_details": [
+        {
+          "name": "mary",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "moved",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "to",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "the",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "bathroom",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "bathroom",
+          "type": "location",
+          "confidence": 0.9
+        },
+        {
+          "name": "moved",
+          "type": "action",
+          "confidence": 0.9
+        },
+        {
+          "name": "john",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "went",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "hallway",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "hallway",
+          "type": "location",
+          "confidence": 0.9
+        },
+        {
+          "name": "went",
+          "type": "action",
+          "confidence": 0.9
+        }
+      ],
+      "reasoning_trace": [
+        "Added fact: moved(mary, bathroom)",
+        "Added fact: moved(john, hallway)",
+        "Added fact: at(mary, bathroom)",
+        "Applied rule: IF moved(X, Y) THEN at(X, Y)",
+        "Concluded that mary is at bathroom"
+      ]
+    },
+    "example_2": {
+      "title": "Sequential Movement",
+      "story": [
+        "John went to the kitchen.",
+        "Mary traveled to the office.",
+        "John moved to the garden."
+      ],
+      "question": "Where is John?",
+      "expected_answer": "garden",
+      "predicted_answer": "Location unknown",
+      "correct": false,
+      "confidence": 0.1,
+      "entities_found": 16,
+      "predicates_generated": 4,
+      "reasoning_steps": 5,
+      "entity_details": [
+        {
+          "name": "john",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "went",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "to",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "the",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "kitchen",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "kitchen",
+          "type": "location",
+          "confidence": 0.9
+        },
+        {
+          "name": "went",
+          "type": "action",
+          "confidence": 0.9
+        },
+        {
+          "name": "mary",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "traveled",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "office",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "office",
+          "type": "location",
+          "confidence": 0.9
+        },
+        {
+          "name": "traveled",
+          "type": "action",
+          "confidence": 0.9
+        },
+        {
+          "name": "moved",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "garden",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "garden",
+          "type": "location",
+          "confidence": 0.9
+        },
+        {
+          "name": "moved",
+          "type": "action",
+          "confidence": 0.9
+        }
+      ],
+      "reasoning_trace": [
+        "Added fact: moved(john, kitchen)",
+        "Added fact: moved(mary, office)",
+        "Added fact: moved(john, garden)",
+        "Added fact: at(mary, office)",
+        "Applied rule: IF moved(X, Y) THEN at(X, Y)"
+      ]
+    },
+    "example_3": {
+      "title": "Multi-person Reasoning",
+      "story": [
+        "Sandra moved to the garden.",
+        "Daniel went to the bathroom.",
+        "Mary traveled to the kitchen.",
+        "Sandra went to the office."
+      ],
+      "question": "Where is Sandra?",
+      "expected_answer": "office",
+      "predicted_answer": "Location unknown",
+      "correct": false,
+      "confidence": 0.1,
+      "entities_found": 19,
+      "predicates_generated": 5,
+      "reasoning_steps": 6,
+      "entity_details": [
+        {
+          "name": "sandra",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "moved",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "to",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "the",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "garden",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "garden",
+          "type": "location",
+          "confidence": 0.9
+        },
+        {
+          "name": "moved",
+          "type": "action",
+          "confidence": 0.9
+        },
+        {
+          "name": "daniel",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "went",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "bathroom",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "bathroom",
+          "type": "location",
+          "confidence": 0.9
+        },
+        {
+          "name": "went",
+          "type": "action",
+          "confidence": 0.9
+        },
+        {
+          "name": "mary",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "traveled",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "kitchen",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "kitchen",
+          "type": "location",
+          "confidence": 0.9
+        },
+        {
+          "name": "traveled",
+          "type": "action",
+          "confidence": 0.9
+        },
+        {
+          "name": "office",
+          "type": "person",
+          "confidence": 0.9
+        },
+        {
+          "name": "office",
+          "type": "location",
+          "confidence": 0.9
+        }
+      ],
+      "reasoning_trace": [
+        "Added fact: moved(sandra, garden)",
+        "Added fact: moved(daniel, bathroom)",
+        "Added fact: moved(mary, kitchen)",
+        "Added fact: moved(sandra, office)",
+        "Added fact: at(mary, kitchen)",
+        "Applied rule: IF moved(X, Y) THEN at(X, Y)"
+      ]
+    }
+  },
+  "performance_metrics": {
+    "overall_accuracy": 0.59,
+    "correct_answers": 59,
+    "total_questions": 100,
+    "average_confidence": 0.7080000000000001,
+    "average_response_time": 0.00010133266448974609,
+    "baseline_comparison": {
+      "bert_accuracy": 1.0,
+      "rule_based_accuracy": 1.0
+    }
+  }
+}
