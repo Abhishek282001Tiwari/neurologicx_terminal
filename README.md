@@ -1,5 +1,12 @@
 # Terminal Interface - Minimalist Streamlit App
 
+My paper on "A Modular Neurosymbolic Framework for General-Purpose Reasoning: Bridging Symbolic and Deep Learning for Interpretable AI" been preprint at "TechRxiv"
+Quick link:https://www.techrxiv.org/users/942678/articles/1316379-a-modular-neurosymbolic-framework-for-general-purpose-reasoning-bridging-symbolic-and-deep-learning-for-interpretable-ai
+
+Cite as: Abhishek Pankaj Tiwari. A Modular Neurosymbolic Framework for General-Purpose Reasoning: Bridging Symbolic and Deep Learning for Interpretable AI. TechRxiv. July 19, 2025.
+DOI: 10.36227/techrxiv.175295182.20276969/v1
+
+
 A minimalist terminal-style web interface built with Streamlit, featuring a pure black background and white Cambria font for a clean code editor experience.
 
 ## Features
