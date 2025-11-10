@@ -26,4 +26,18 @@ header_pages:
   - results.md
   - paper.md
   - about.md
-  
+
+# Explicit navigation links (add this)
+navigation:
+  - title: "Home"
+    url: "/"
+  - title: "Research"
+    url: "/research/"
+  - title: "Demo"
+    url: "/demo/"
+  - title: "Results"
+    url: "/results/"
+  - title: "Paper"
+    url: "/paper/"
+  - title: "About"
+    url: "/about/"
