@@ -2,6 +2,7 @@
 layout: page
 title: "Research Results"
 description: "Comprehensive evaluation results and statistical analysis"
+permalink: /results/
 ---
 
 # Research Results

@@ -18,7 +18,7 @@ research_paper_url: "https://www.techrxiv.org/users/942678/articles/1316379"
 streamlit_app_url: "https://neurologicx.streamlit.app"
 github_repo: "https://github.com/Abhishek282001Tiwari/NeuroLogicX"
 
-# Navigation
+# Explicit navigation
 header_pages:
   - index.md
   - research.md
@@ -27,17 +27,5 @@ header_pages:
   - paper.md
   - about.md
 
-# Explicit navigation links (add this)
-navigation:
-  - title: "Home"
-    url: "/"
-  - title: "Research"
-    url: "/research/"
-  - title: "Demo"
-    url: "/demo/"
-  - title: "Results"
-    url: "/results/"
-  - title: "Paper"
-    url: "/paper/"
-  - title: "About"
-    url: "/about/"
+# Enable navigation in minima theme
+show_header: true

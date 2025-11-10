@@ -2,6 +2,7 @@
 layout: page
 title: "Research Paper"
 description: "Published research paper and citation information"
+permalink: /paper/
 ---
 
 # Research Paper

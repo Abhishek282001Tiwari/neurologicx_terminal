@@ -2,6 +2,7 @@
 layout: page
 title: "About"
 description: "Researcher information and project details"
+permalink: /about/
 ---
 
 # About the Research

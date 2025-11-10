@@ -2,6 +2,7 @@
 layout: page
 title: "Research Framework"
 description: "Technical details of the NeuroLogicX architecture and methodology"
+permalink: /research/
 ---
 
 # Research Framework

@@ -2,6 +2,7 @@
 layout: page
 title: "Live Demo"
 description: "Interactive demonstration of NeuroLogicX reasoning capabilities"
+permalink: /demo/
 ---
 
 # Live Demo
