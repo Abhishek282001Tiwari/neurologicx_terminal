@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: default
 title: "Research Framework"
 description: "Technical details of the NeuroLogicX architecture and methodology"
 permalink: /research/

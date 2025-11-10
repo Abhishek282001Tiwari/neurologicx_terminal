@@ -2,6 +2,7 @@
 layout: default
 title: "NeuroLogicX Research"
 description: "A Modular Neurosymbolic Framework for General-Purpose Reasoning"
+permalink: /
 ---
 
 # NeuroLogicX Research
@@ -34,143 +35,12 @@ Achieving 94.2% accuracy on bAbI reasoning tasks with full explainability throug
             <li>Open source implementation with comprehensive evaluation framework</li>
         </ul>
     </div>
-    <div class="project-results">
-        <h4>Performance Highlights:</h4>
-        <ul>
-            <li><strong>NeuroLogicX</strong>: 94.2% accuracy across all task types</li>
-            <li><strong>Rule-Based Baseline</strong>: 91.1% accuracy</li>
-            <li><strong>BERT Baseline</strong>: 87.3% accuracy</li>
-            <li><strong>Statistical Significance</strong>: p < 0.05 for all comparisons</li>
-            <li><strong>Confidence Calibration</strong>: 0.847 Brier score</li>
-        </ul>
-    </div>
     <div class="project-links">
-        <a href="{{ site.streamlit_app_url }}" class="project-link" target="_blank">Live Demo</a>
-        <a href="/research" class="project-link">Research Details</a>
-        <a href="{{ site.research_paper_url }}" class="project-link" target="_blank">Read Paper</a>
+        <a href="https://neurologicx.streamlit.app" class="project-link" target="_blank">Live Demo</a>
+        <a href="{{ site.baseurl }}/research" class="project-link">Research Details</a>
+        <a href="https://www.techrxiv.org/users/942678/articles/1316379" class="project-link" target="_blank">Read Paper</a>
     </div>
 </div>
-
-<div class="project featured">
-    <div class="project-header">
-        <h3>System Architecture & Implementation</h3>
-        <span class="project-status">Production Architecture</span>
-    </div>
-    <div class="project-meta">
-        <span class="project-tech">Modular Design • BERT Integration • Symbolic Reasoning • Python</span>
-        <span class="project-date">2024</span>
-    </div>
-    <p class="project-description">
-        NeuroLogicX integrates neural perception components with symbolic reasoning engines through a carefully designed modular architecture that maintains transparency while achieving competitive performance on complex reasoning tasks.
-    </p>
-    <div class="project-features">
-        <h4>Architecture Components:</h4>
-        <ul>
-            <li><strong>Neural Perception Module</strong>: BERT-based entity and relationship extraction</li>
-            <li><strong>Symbolic Translation Layer</strong>: Converts neural outputs to logical predicates</li>
-            <li><strong>Forward-Chaining Engine</strong>: Performs logical inference over extracted facts</li>
-            <li><strong>Explanation Generator</strong>: Produces human-readable reasoning traces</li>
-            <li><strong>Confidence Calibration</strong>: Ensures reliable uncertainty quantification</li>
-        </ul>
-    </div>
-    <div class="project-results">
-        <h4>Technical Implementation:</h4>
-        <ul>
-            <li>Python 3.8+ with PyTorch for neural components</li>
-            <li>Custom symbolic reasoning engine for logical inference</li>
-            <li>Streamlit-based interactive demonstration interface</li>
-            <li>Comprehensive evaluation framework with multiple baselines</li>
-            <li>Modular design enabling component replacement and extension</li>
-        </ul>
-    </div>
-    <div class="project-links">
-        <a href="/research" class="project-link">Architecture Details</a>
-        <a href="{{ site.github_repo }}" class="project-link" target="_blank">View Code</a>
-        <a href="/demo" class="project-link">Try Demo</a>
-    </div>
-</div>
-
-<div class="project featured">
-    <div class="project-header">
-        <h3>Performance Benchmarking & Results</h3>
-        <span class="project-status">Comprehensive Evaluation</span>
-    </div>
-    <div class="project-meta">
-        <span class="project-tech">bAbI Tasks • Statistical Analysis • Model Comparison • Visualization</span>
-        <span class="project-date">2024</span>
-    </div>
-    <p class="project-description">
-        Rigorous evaluation across 20 bAbI reasoning tasks demonstrating NeuroLogicX's superior performance compared to both pure neural and pure symbolic baselines, with statistical significance and comprehensive error analysis.
-    </p>
-    <div class="project-features">
-        <h4>Evaluation Methodology:</h4>
-        <ul>
-            <li>20-task bAbI dataset covering diverse reasoning types</li>
-            <li>Comparison against BERT-only and rule-based baselines</li>
-            <li>Statistical significance testing with p-value reporting</li>
-            <li>Confidence calibration and uncertainty quantification</li>
-            <li>Error analysis across different reasoning complexity levels</li>
-        </ul>
-    </div>
-    <div class="project-results">
-        <h4>Key Findings:</h4>
-        <ul>
-            <li>Consistent outperformance across all task categories</li>
-            <li>Strong statistical significance (p < 0.05) in all comparisons</li>
-            <li>Robust performance on complex multi-step reasoning tasks</li>
-            <li>Excellent confidence calibration for reliable deployment</li>
-            <li>Transparent reasoning enabling error diagnosis and improvement</li>
-        </ul>
-    </div>
-    <div class="project-links">
-        <a href="/results" class="project-link">Detailed Results</a>
-        <a href="{{ site.research_paper_url }}" class="project-link" target="_blank">Research Paper</a>
-        <a href="/demo" class="project-link">Interactive Charts</a>
-    </div>
-</div>
-
-<div class="project featured">
-    <div class="project-header">
-        <h3>Live Demonstration & Interactive Research</h3>
-        <span class="project-status">Active Deployment</span>
-    </div>
-    <div class="project-meta">
-        <span class="project-tech">Streamlit • Real-time Processing • Visualization • Web Deployment</span>
-        <span class="project-date">2024</span>
-    </div>
-    <p class="project-description">
-        Experience NeuroLogicX in action through our interactive web application, featuring real-time story processing, complete reasoning trace visualization, and performance comparison against baseline models.
-    </p>
-    <div class="project-features">
-        <h4>Demo Capabilities:</h4>
-        <ul>
-            <li>Real-time input processing with immediate reasoning results</li>
-            <li>Complete reasoning trace visualization showing each inference step</li>
-            <li>Side-by-side comparison with baseline model performance</li>
-            <li>Interactive entity extraction and relationship mapping</li>
-            <li>Confidence scoring and performance metrics display</li>
-        </ul>
-    </div>
-    <div class="project-results">
-        <h4>Access Options:</h4>
-        <ul>
-            <li>Web-based demo requiring only a modern browser</li>
-            <li>Full source code availability for local deployment</li>
-            <li>Pre-trained models and example datasets included</li>
-            <li>Comprehensive documentation for researchers</li>
-            <li>Open source licensing for academic and research use</li>
-        </ul>
-    </div>
-    <div class="project-links">
-        <a href="{{ site.streamlit_app_url }}" class="project-link" target="_blank">Launch Live Demo</a>
-        <a href="{{ site.github_repo }}" class="project-link" target="_blank">Source Code</a>
-        <a href="/demo" class="project-link">Demo Details</a>
-    </div>
-</div>
-
----
-
-*Ready to explore neuro-symbolic AI? [Launch the live demo]({{ site.streamlit_app_url }}){:target="_blank"} to experience NeuroLogicX in action or [read the research paper]({{ site.research_paper_url }}){:target="_blank"} for technical details.*
 
 <style>
 .project {

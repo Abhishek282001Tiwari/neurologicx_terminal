@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: default
 title: "Live Demo"
 description: "Interactive demonstration of NeuroLogicX reasoning capabilities"
 permalink: /demo/

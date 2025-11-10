@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: default
 title: "Research Results"
 description: "Comprehensive evaluation results and statistical analysis"
 permalink: /results/
