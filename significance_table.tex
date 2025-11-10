@@ -1,16 +1,17 @@
-
 \begin{table}[htb]
-\centering
-\caption{Statistical Significance Tests Between Systems}
-\label{tab:significance}
-\begin{tabular}{lcc}
-\toprule
-Comparison & p-value & Significant \\
-\midrule
-NeuroLogicX vs. BERT Baseline & 0.0034 & Yes** \\
-NeuroLogicX vs. Rule-Based & 0.0182 & Yes* \\
-BERT vs. Rule-Based & 0.0071 & Yes** \\
-\bottomrule
-\end{tabular}
-\note{* p < 0.05, ** p < 0.01}
-\end{table}
+    \centering
+    \caption{Statistical Significance Tests Between Systems}
+    \label{tab:significance}
+    \begin{tabular}{lccc}
+    \toprule
+    Comparison & p-value & Significance & Effect Size \\
+    \midrule
+    NeuroLogicX vs. BERT Baseline & 0.0034 & ** & 0.069 \\
+    NeuroLogicX vs. Rule-Based & 0.0182 & * & 0.031 \\
+    BERT Baseline vs. Rule-Based & 0.0071 & ** & 0.038 \\
+    \bottomrule
+    \end{tabular}
+    \vspace{0.1cm}
+    \footnotesize
+    Note: *p < 0.05, **p < 0.01. Effect size = accuracy difference.
+    \end{table}

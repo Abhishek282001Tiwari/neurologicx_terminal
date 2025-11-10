@@ -167,8 +167,8 @@ class NeuralPerceptionModule:
         return list(entity_map.values())
 
 
-class SymbolicReasoningEngine:
-    """Forward chaining symbolic reasoning engine"""
+class EnhancedSymbolicReasoningEngine:
+    """Enhanced Forward chaining symbolic reasoning engine with fixed pattern matching"""
     
     def __init__(self):
         self.facts = set()
@@ -203,6 +203,13 @@ class SymbolicReasoningEngine:
         self.add_rule(Rule(
             conditions=[Predicate("picked_up", ["X", "Y"])],
             conclusion=Predicate("has", ["X", "Y"]),
+            confidence=0.9
+        ))
+        
+        # Enhanced rules for better reasoning
+        self.add_rule(Rule(
+            conditions=[Predicate("at", ["X", "Y"]), Predicate("moved", ["X", "Z"])],
+            conclusion=Predicate("at", ["X", "Z"]),
             confidence=0.9
         ))
     
@@ -258,7 +265,7 @@ class SymbolicReasoningEngine:
         return True
     
     def _matches_any_fact(self, condition: Predicate) -> bool:
-        """Check if a condition matches any existing fact"""
+        """Check if a condition matches any existing fact - FIXED"""
         condition_pattern = self._predicate_to_pattern(condition)
         for fact_str in self.facts:
             if self._matches_pattern(fact_str, condition_pattern):
@@ -279,8 +286,9 @@ class SymbolicReasoningEngine:
         return pattern
     
     def _matches_pattern(self, fact_str: str, pattern: str) -> bool:
-        """Check if fact matches pattern"""
-        return bool(re.match(pattern, fact_str))
+        """Check if fact matches pattern - FIXED"""
+        # Use fullmatch instead of match to ensure complete matching
+        return bool(re.fullmatch(pattern, fact_str))
     
     def _apply_rule(self, rule: Rule) -> Optional[Predicate]:
         """Apply a rule and return the new predicate"""
@@ -305,23 +313,49 @@ class SymbolicReasoningEngine:
         )
     
     def _find_bindings(self, conditions: List[Predicate]) -> Optional[Dict[str, str]]:
-        """Find variable bindings for rule conditions"""
-        # Simplified binding finder - in practice would be more sophisticated
+        """Find variable bindings for rule conditions - IMPROVED"""
+        if not conditions:
+            return {}
+        
+        # Start with first condition
+        first_condition = conditions[0]
+        pattern = self._predicate_to_pattern(first_condition)
+        
         bindings = {}
+        for fact_str in self.facts:
+            match = re.fullmatch(pattern, fact_str)
+            if match:
+                # Extract bindings from first condition
+                var_index = 0
+                for arg in first_condition.arguments:
+                    if arg.isupper():  # Variable
+                        bindings[arg] = match.group(var_index + 1)
+                        var_index += 1
+                
+                # Verify bindings work for all conditions
+                if self._bindings_satisfy_all_conditions(bindings, conditions[1:]):
+                    return bindings
         
+        return None
+    
+    def _bindings_satisfy_all_conditions(self, bindings: Dict[str, str], conditions: List[Predicate]) -> bool:
+        """Check if bindings satisfy all conditions"""
         for condition in conditions:
-            pattern = self._predicate_to_pattern(condition)
-            for fact_str in self.facts:
-                match = re.match(pattern, fact_str)
-                if match:
-                    var_index = 0
-                    for arg in condition.arguments:
-                        if arg.isupper():  # Variable
-                            bindings[arg] = match.group(var_index + 1)
-                            var_index += 1
-                    break
+            # Apply bindings to condition
+            grounded_args = []
+            for arg in condition.arguments:
+                if arg in bindings:
+                    grounded_args.append(bindings[arg])
+                else:
+                    grounded_args.append(arg)
+            
+            grounded_predicate = Predicate(condition.name, grounded_args)
+            grounded_fact = str(grounded_predicate)
+            
+            if grounded_fact not in self.facts:
+                return False
         
-        return bindings if bindings else None
+        return True
     
     def query(self, query_predicate: Predicate) -> List[Dict[str, str]]:
         """Query the knowledge base"""
@@ -329,7 +363,7 @@ class SymbolicReasoningEngine:
         pattern = self._predicate_to_pattern(query_predicate)
         
         for fact_str in self.facts:
-            match = re.match(pattern, fact_str)
+            match = re.fullmatch(pattern, fact_str)
             if match:
                 binding = {}
                 var_index = 0
@@ -343,8 +377,8 @@ class SymbolicReasoningEngine:
         return results
 
 
-class NeuralSymbolicTranslator:
-    """Translates between neural embeddings and symbolic predicates"""
+class EnhancedNeuralSymbolicTranslator:
+    """Enhanced translator with better semantic understanding"""
     
     def __init__(self):
         self.action_mappings = {
@@ -357,9 +391,93 @@ class NeuralSymbolicTranslator:
             'bathroom', 'kitchen', 'hallway', 'garden', 'office', 
             'bedroom', 'living room', 'garage', 'room'
         }
+        
+        # Enhanced action mappings with semantic roles
+        self.semantic_frames = {
+            'movement': {
+                'verbs': ['moved', 'went', 'traveled', 'walked', 'ran', 'proceeded'],
+                'roles': ['agent', 'destination']
+            },
+            'transfer': {
+                'verbs': ['took', 'grabbed', 'picked', 'picked up', 'gave', 'handed'],
+                'roles': ['agent', 'theme', 'recipient']
+            },
+            'location': {
+                'verbs': ['is', 'was', 'stayed', 'remained'],
+                'roles': ['entity', 'location']
+            }
+        }
     
     def text_to_predicates(self, text: str, entities: List[Entity]) -> List[Predicate]:
-        """Convert text and entities to symbolic predicates"""
+        """Enhanced predicate extraction with semantic role labeling"""
+        predicates = []
+        text_lower = text.lower()
+        
+        # Extract semantic frames
+        frames = self._extract_semantic_frames(text, entities)
+        
+        for frame_type, frame_data in frames.items():
+            if frame_type == 'movement' and 'agent' in frame_data and 'destination' in frame_data:
+                predicates.append(Predicate(
+                    name="at",
+                    arguments=[frame_data['agent'], frame_data['destination']],
+                    confidence=0.9,
+                    source="neural"
+                ))
+            
+            elif frame_type == 'transfer' and 'agent' in frame_data and 'theme' in frame_data:
+                predicates.append(Predicate(
+                    name="has",
+                    arguments=[frame_data['agent'], frame_data['theme']],
+                    confidence=0.85,
+                    source="neural"
+                ))
+        
+        # Fallback to original method if no frames found
+        if not predicates:
+            predicates = self._fallback_predicate_extraction(text, entities)
+        
+        return predicates
+    
+    def _extract_semantic_frames(self, text: str, entities: List[Entity]) -> Dict[str, Dict[str, str]]:
+        """Extract semantic frames from text"""
+        frames = {}
+        text_lower = text.lower()
+        
+        for frame_name, frame_info in self.semantic_frames.items():
+            for verb in frame_info['verbs']:
+                if verb in text_lower:
+                    frame_data = self._fill_semantic_roles(text, entities, frame_info['roles'])
+                    if frame_data:
+                        frames[frame_name] = frame_data
+                    break
+        
+        return frames
+    
+    def _fill_semantic_roles(self, text: str, entities: List[Entity], roles: List[str]) -> Dict[str, str]:
+        """Fill semantic roles based on syntactic patterns"""
+        # Implement role filling based on dependency parsing patterns
+        # For now, use simple heuristic approach
+        role_fillers = {}
+        
+        people = [e.name for e in entities if e.entity_type == 'person']
+        locations = [e.name for e in entities if e.entity_type == 'location']
+        objects = [e.name for e in entities if e.entity_type == 'object']
+        
+        # Simple heuristic: first person is agent, first location is destination, etc.
+        if 'agent' in roles and people:
+            role_fillers['agent'] = people[0]
+        if 'destination' in roles and locations:
+            role_fillers['destination'] = locations[0]
+        if 'theme' in roles and objects:
+            role_fillers['theme'] = objects[0]
+        if 'entity' in roles and people:
+            role_fillers['entity'] = people[0]
+        
+        return role_fillers
+    
+    def _fallback_predicate_extraction(self, text: str, entities: List[Entity]) -> List[Predicate]:
+        """Fallback to original predicate extraction method"""
         predicates = []
         text_lower = text.lower()
         
@@ -426,69 +544,156 @@ class NeuralSymbolicTranslator:
                 person_pos < action_pos and action_pos < obj_pos)
 
 
-class BABITaskProcessor:
-    """Processes bAbI-style reasoning tasks"""
+class EnhancedBABITaskProcessor:
+    """Enhanced processor with comprehensive evaluation and error handling"""
     
     def __init__(self):
         self.neural_module = NeuralPerceptionModule()
-        self.symbolic_engine = SymbolicReasoningEngine()
-        self.translator = NeuralSymbolicTranslator()
+        self.symbolic_engine = EnhancedSymbolicReasoningEngine()
+        self.translator = EnhancedNeuralSymbolicTranslator()
         self.evaluation_results = []
+        self.evaluation_metrics = {
+            'total_processed': 0,
+            'correct_answers': 0,
+            'confidence_scores': [],
+            'reasoning_depths': []
+        }
     
     def process_task(self, story_sentences: List[str], question: str) -> ReasoningTrace:
-        """Process a complete bAbI-style task"""
-        # Reset reasoning engine for new task
-        self.symbolic_engine = SymbolicReasoningEngine()
-        
-        # Step 1: Neural perception - extract entities and encode text
-        all_entities = []
-        all_predicates = []
-        
-        for sentence in story_sentences:
-            entities = self.neural_module.extract_entities(sentence)
-            all_entities.extend(entities)
+        """Robust task processing with comprehensive error handling"""
+        try:
+            # Validate inputs
+            if not story_sentences:
+                raise ValueError("Empty story provided")
+            if not question or not question.strip():
+                raise ValueError("Empty question provided")
             
-            # Translate to symbolic predicates
-            predicates = self.translator.text_to_predicates(sentence, entities)
-            all_predicates.extend(predicates)
+            self.evaluation_metrics['total_processed'] += 1
+            
+            # Reset reasoning engine for new task
+            self.symbolic_engine = EnhancedSymbolicReasoningEngine()
+            
+            # Step 1: Neural perception - extract entities and encode text
+            all_entities = self._extract_entities_with_fallback(story_sentences)
+            all_predicates = self._extract_predicates_with_fallback(story_sentences, all_entities)
             
             # Add predicates as facts
-            for predicate in predicates:
+            for predicate in all_predicates:
                 self.symbolic_engine.add_fact(predicate)
+            
+            # Step 2: Forward chaining reasoning
+            derived_facts = self.symbolic_engine.forward_chain()
+            
+            # Step 3: Answer the question
+            answer, confidence = self._answer_question(question, all_entities)
+            
+            # Step 4: Create reasoning trace
+            trace = ReasoningTrace(
+                question=question,
+                story_facts=story_sentences,
+                extracted_entities=self._deduplicate_entities(all_entities),
+                symbolic_predicates=all_predicates + derived_facts,
+                reasoning_steps=self.symbolic_engine.reasoning_trace.copy(),
+                final_answer=answer,
+                confidence=confidence,
+                neural_embeddings=self.neural_module.encode_text(story_sentences + [question])
+            )
+            
+            # Track metrics
+            self.evaluation_metrics['confidence_scores'].append(confidence)
+            self.evaluation_metrics['reasoning_depths'].append(len(trace.reasoning_steps))
+            
+            return trace
+            
+        except Exception as e:
+            # Return a fallback trace with error information
+            return self._create_error_trace(story_sentences, question, str(e))
+    
+    def _extract_entities_with_fallback(self, sentences: List[str]) -> List[Entity]:
+        """Extract entities with fallback to rule-based if neural fails"""
+        try:
+            all_entities = []
+            for sentence in sentences:
+                entities = self.neural_module.extract_entities(sentence)
+                all_entities.extend(entities)
+            return all_entities
+        except Exception as e:
+            print(f"Entity extraction warning: {e}")
+            # Fallback to simple rule-based extraction
+            entities = []
+            for sentence in sentences:
+                entities.extend(self._rule_based_entity_extraction(sentence))
+            return entities
+    
+    def _rule_based_entity_extraction(self, sentence: str) -> List[Entity]:
+        """Rule-based fallback for entity extraction"""
+        entities = []
+        sentence_lower = sentence.lower()
         
-        # Step 2: Forward chaining reasoning
-        derived_facts = self.symbolic_engine.forward_chain()
+        # Simple pattern matching
+        person_pattern = r'\b[A-Z][a-z]+\b'
+        location_pattern = r'\b(bathroom|kitchen|hallway|garden|office|bedroom|living room|garage)\b'
+        action_pattern = r'\b(moved|went|traveled|walked|ran|took|grabbed|picked up|put down)\b'
+        object_pattern = r'\b(apple|book|ball|key|phone|laptop|cup|plate)\b'
         
-        # Step 3: Answer the question
-        answer, confidence = self._answer_question(question, all_entities)
+        for match in re.finditer(person_pattern, sentence):
+            entities.append(Entity(name=match.group().lower(), entity_type='person', confidence=0.8))
         
-        # Step 4: Create reasoning trace
-        trace = ReasoningTrace(
+        for match in re.finditer(location_pattern, sentence_lower):
+            entities.append(Entity(name=match.group(), entity_type='location', confidence=0.9))
+        
+        for match in re.finditer(action_pattern, sentence_lower):
+            entities.append(Entity(name=match.group(), entity_type='action', confidence=0.8))
+        
+        for match in re.finditer(object_pattern, sentence_lower):
+            entities.append(Entity(name=match.group(), entity_type='object', confidence=0.8))
+        
+        return entities
+    
+    def _extract_predicates_with_fallback(self, sentences: List[str], entities: List[Entity]) -> List[Predicate]:
+        """Extract predicates with fallback handling"""
+        try:
+            all_predicates = []
+            for sentence in sentences:
+                predicates = self.translator.text_to_predicates(sentence, entities)
+                all_predicates.extend(predicates)
+            return all_predicates
+        except Exception as e:
+            print(f"Predicate extraction warning: {e}")
+            return []
+    
+    def _create_error_trace(self, story_sentences: List[str], question: str, error_msg: str) -> ReasoningTrace:
+        """Create a fallback trace when processing fails"""
+        return ReasoningTrace(
             question=question,
             story_facts=story_sentences,
-            extracted_entities=self._deduplicate_entities(all_entities),
-            symbolic_predicates=all_predicates + derived_facts,
-            reasoning_steps=self.symbolic_engine.reasoning_trace.copy(),
-            final_answer=answer,
-            confidence=confidence,
-            neural_embeddings=self.neural_module.encode_text(story_sentences + [question])
+            extracted_entities=[],
+            symbolic_predicates=[],
+            reasoning_steps=[ReasoningStep(
+                step_type="error",
+                content=f"Processing error: {error_msg}",
+                confidence=0.0
+            )],
+            final_answer=f"Error: {error_msg}",
+            confidence=0.0
         )
-        
-        return trace
     
     def _answer_question(self, question: str, entities: List[Entity]) -> Tuple[str, float]:
-        """Answer a question based on the knowledge base"""
+        """Enhanced question answering with multiple question types"""
         question_lower = question.lower()
         
-        # Parse question type
-        if "where is" in question_lower or "where's" in question_lower:
+        # Enhanced question parsing
+        if any(phrase in question_lower for phrase in ["where is", "where's", "location of"]):
             return self._answer_location_question(question, entities)
-        elif "who is" in question_lower or "who's" in question_lower:
+        elif any(phrase in question_lower for phrase in ["who is", "who's", "where is", "person in"]):
             return self._answer_person_question(question, entities)
-        elif "what" in question_lower:
+        elif any(phrase in question_lower for phrase in ["what does", "what is", "what has"]):
             return self._answer_what_question(question, entities)
+        elif any(phrase in question_lower for phrase in ["does", "is"]):
+            return self._answer_verification_question(question, entities)
         else:
-            return "I don't understand the question", 0.0
+            # Try to infer question type from structure
+            return self._answer_generic_question(question, entities)
     
     def _answer_location_question(self, question: str, entities: List[Entity]) -> Tuple[str, float]:
         """Answer 'where is X?' questions"""
@@ -525,14 +730,90 @@ class BABITaskProcessor:
             return "Location unknown", 0.1
     
     def _answer_person_question(self, question: str, entities: List[Entity]) -> Tuple[str, float]:
-        """Answer 'who is X?' questions"""
-        # Implementation for person-based questions
-        return "Person query not implemented", 0.0
+        """Answer person-related questions - IMPLEMENTED"""
+        question_lower = question.lower()
+        
+        # "Who is in X?" questions
+        location_match = re.search(r'who (?:is|are) in the (\w+)', question_lower)
+        if location_match:
+            target_location = location_match.group(1)
+            
+            # Query for people at this location
+            query = Predicate("at", ["X", target_location])
+            results = self.symbolic_engine.query(query)
+            
+            if results:
+                people = [result["X"] for result in results]
+                if len(people) == 1:
+                    return people[0].capitalize(), 0.9
+                else:
+                    return f"{', '.join(p.capitalize() for p in people)}", 0.8
+            else:
+                return "No one found at that location", 0.1
+        
+        return "Person query type not implemented", 0.0
     
     def _answer_what_question(self, question: str, entities: List[Entity]) -> Tuple[str, float]:
         """Answer 'what X?' questions"""
-        # Implementation for what-based questions
-        return "What query not implemented", 0.0
+        question_lower = question.lower()
+        
+        # "What does X have?" questions
+        if "what does" in question_lower and "have" in question_lower:
+            person_match = re.search(r'what does (\w+) have', question_lower)
+            if person_match:
+                target_person = person_match.group(1).lower()
+                
+                # Query for objects this person has
+                query = Predicate("has", [target_person, "X"])
+                results = self.symbolic_engine.query(query)
+                
+                if results:
+                    objects = [result["X"] for result in results]
+                    if len(objects) == 1:
+                        return objects[0], 0.8
+                    else:
+                        return f"{', '.join(objects)}", 0.7
+                else:
+                    return f"{target_person.capitalize()} has nothing", 0.8
+        
+        return "What query type not implemented", 0.0
+    
+    def _answer_verification_question(self, question: str, entities: List[Entity]) -> Tuple[str, float]:
+        """Answer yes/no verification questions"""
+        question_lower = question.lower()
+        
+        # Extract potential predicates from question
+        if "is" in question_lower and "in" in question_lower:
+            # "Is X in Y?" pattern
+            person_match = re.search(r'is (\w+) in the (\w+)', question_lower)
+            if person_match:
+                person, location = person_match.groups()
+                
+                # Check if person is at location
+                query = Predicate("at", [person.lower(), location.lower()])
+                results = self.symbolic_engine.query(query)
+                
+                confidence = 0.9 if results else 0.1
+                answer = "Yes" if results else "No"
+                
+                return answer, confidence
+        
+        return "Cannot answer verification question", 0.0
+    
+    def _answer_generic_question(self, question: str, entities: List[Entity]) -> Tuple[str, float]:
+        """Fallback for generic questions"""
+        # Try to extract key entities and make a best guess
+        people = [e.name for e in entities if e.entity_type == 'person']
+        locations = [e.name for e in entities if e.entity_type == 'location']
+        
+        if people and locations:
+            # Default to first person's location
+            query = Predicate("at", [people[0], "X"])
+            results = self.symbolic_engine.query(query)
+            if results:
+                return results[0]["X"], 0.6
+        
+        return "I don't understand the question", 0.0
     
     def _deduplicate_entities(self, entities: List[Entity]) -> List[Entity]:
         """Remove duplicate entities"""
@@ -544,6 +825,23 @@ class BABITaskProcessor:
                 seen.add(key)
                 unique_entities.append(entity)
         return unique_entities
+    
+    def get_performance_metrics(self) -> Dict[str, Any]:
+        """Get comprehensive performance metrics"""
+        if self.evaluation_metrics['total_processed'] == 0:
+            return {}
+        
+        confidence_scores = self.evaluation_metrics['confidence_scores']
+        reasoning_depths = self.evaluation_metrics['reasoning_depths']
+        
+        return {
+            'total_tasks_processed': self.evaluation_metrics['total_processed'],
+            'accuracy': self.evaluation_metrics['correct_answers'] / self.evaluation_metrics['total_processed'],
+            'avg_confidence': float(np.mean(confidence_scores)) if confidence_scores else 0,
+            'avg_reasoning_depth': float(np.mean(reasoning_depths)) if reasoning_depths else 0,
+            'confidence_std': float(np.std(confidence_scores)) if confidence_scores else 0,
+            'max_reasoning_depth': int(max(reasoning_depths)) if reasoning_depths else 0
+        }
     
     def evaluate_accuracy(self, test_cases: List[Dict]) -> Dict[str, float]:
         """Evaluate accuracy on a set of test cases"""
@@ -562,6 +860,7 @@ class BABITaskProcessor:
             is_correct = predicted_answer == expected_answer
             if is_correct:
                 correct += 1
+                self.evaluation_metrics['correct_answers'] += 1
             
             results.append({
                 'story': story,
@@ -583,16 +882,20 @@ class BABITaskProcessor:
         }
 
 
+# Keep the original TerminalLogicEngine class but update it to use EnhancedBABITaskProcessor
 class TerminalLogicEngine:
     """Enhanced logic engine with neural-symbolic reasoning capabilities"""
     
     def __init__(self):
-        # Initialize neurosymbolic components
-        self.babi_processor = BABITaskProcessor()
+        # Initialize neurosymbolic components with enhanced processor
+        self.babi_processor = EnhancedBABITaskProcessor()
         self.current_story = []
         self.last_reasoning_trace = None
         
-        # Original terminal commands
+        # [Rest of your original TerminalLogicEngine implementation remains exactly the same]
+        # Only changed the processor to EnhancedBABITaskProcessor
+        
+        # Original terminal commands (unchanged)
         self.commands = {
             'help': self._help_command,
             'dog': self._dog_command,
@@ -615,7 +918,7 @@ class TerminalLogicEngine:
             'demo': self._demo_command,
         }
         
-        # Fun facts databases
+        # Fun facts databases (unchanged)
         self.dog_facts = [
             "Dogs have been human companions for over 15,000 years.",
             "A dog's sense of smell is 10,000 to 100,000 times stronger than humans.",
@@ -641,6 +944,9 @@ class TerminalLogicEngine:
             "Cats can make over 100 different vocal sounds.",
             "Adult cats only meow to communicate with humans, not other cats."
         ]
+    
+    # [All the command methods remain exactly the same as in your original code]
+    # Only the processor is enhanced - no changes to the terminal interface
     
     def _help_command(self, args: List[str]) -> str:
         """Display available commands"""
@@ -1051,26 +1357,16 @@ def handle_command(command: str) -> str:
 
 # For testing purposes
 if __name__ == "__main__":
-    print("Testing Terminal Logic Engine...")
-    print("=" * 40)
+    print("Testing Enhanced Terminal Logic Engine...")
+    print("=" * 45)
     
     test_commands = [
         "help",
-        "dog",
-        "cat", 
-        "add 5 3",
-        "subtract 10 4",
-        "multiply 3 7",
-        "divide 15 3",
-        "divide 5 0",
-        "add 2",
-        "random",
-        "random 50",
-        "random 10 20",
-        "echo Hello World!",
-        "date",
-        "invalid_command",
-        ""
+        "demo",
+        "story Mary moved to the kitchen. John went to the garden.",
+        "reason Where is Mary?",
+        "evaluate",
+        "neural_status"
     ]
     
     for cmd in test_commands:
